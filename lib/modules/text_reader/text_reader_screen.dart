@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-
 import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
 import 'package:opencv_4/opencv_4.dart';
 import 'package:opencv_4/factory/pathfrom.dart';
@@ -12,10 +11,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:object_detection/shared/constants.dart';
 import 'package:vibration/vibration.dart';
+
 import '../../layouts/home_screen/home_screen.dart';
 import '../../strings/strings.dart';
 import '../../ui/camera_controller.dart';
-import '../../utils/tts_utils.dart';
 
 class TextReaderScreen extends StatefulWidget {
   const TextReaderScreen({Key? key}) : super(key: key);
@@ -125,12 +124,19 @@ class _cameraControllerPreviewScannerState extends State<TextReaderScreen> {
                 constantValue: 6);
           } on PlatformException catch (e){ print(e.message);}
           imgFile =  await byteToFile(_byte!);
-          String res = await FlutterTesseractOcr.extractText(imgFile.path,
-              language: 'ara+eng',
-              args: {
-                "psm": "11",
-                "preserve_interword_spaces": "3",
-              });
+          String res = await FlutterTesseractOcr.extractText(
+            imgFile.path,
+            language: 'ara',
+            args: {
+              'psm': '11',
+              'preserve_interword_spaces': '3',
+              'user_defined_dpi': '70',
+              'tessedit_char_whitelist': 'ابتثجحخدذرزسشصضطظعغفقكلمنهويءآأإئؤى',
+              '--psm': '0',
+              '--oem': '1',
+            },
+          );
+
           setState(() {
             res = res.replaceAll(RegExp("\\s+")," ").replaceAll(RegExp("[!-\/:-@\[-`\{-~]"),"");
             _scanResults = res;
@@ -168,9 +174,9 @@ class _cameraControllerPreviewScannerState extends State<TextReaderScreen> {
           constraints: const BoxConstraints.expand(),
           child: (CameraControllerFactory.cameraControllers[2] != null)
               ? ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: CameraPreview(
-                      CameraControllerFactory.cameraControllers[2]!))
+              borderRadius: BorderRadius.circular(15),
+              child: CameraPreview(
+                  CameraControllerFactory.cameraControllers[2]!))
               : Container(),
         ),
       ),
