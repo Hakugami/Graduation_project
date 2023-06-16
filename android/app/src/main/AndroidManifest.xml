@@ -22,7 +22,7 @@
 
     <application
         android:icon="@mipmap/ic_launcher"
-        android:label="Lemme C">
+        android:label="Life Window">
 
         <activity
             android:name=".MainActivity"

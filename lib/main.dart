@@ -16,27 +16,23 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-   return MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: PRIMARY_SWATCH,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        fontFamily: REGULAR_FONT,
-
-        appBarTheme: AppBarTheme(
-
-            backwardsCompatibility: false,
-            titleTextStyle: TextStyle(color: BLACK_COLOR,fontFamily: REGULAR_FONT,fontSize: 15),
-          titleSpacing: 50,
-          elevation: 0.5,
+          primarySwatch: PRIMARY_SWATCH,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          fontFamily: REGULAR_FONT,
+          appBarTheme: AppBarTheme(
+            //   backwardsCompatibility: false,
+            titleTextStyle: TextStyle(
+                color: BLACK_COLOR, fontFamily: REGULAR_FONT, fontSize: 15),
+            titleSpacing: 50,
+            elevation: 0.5,
             systemOverlayStyle: SystemUiOverlayStyle(
-                statusBarColor: MAIN_COLOR,
+              statusBarColor: MAIN_COLOR,
             ),
-        )
-      ),
+          )),
       home: AnimatedSplash(),
-
-
     );
   }
 }
