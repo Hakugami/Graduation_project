@@ -1,6 +1,5 @@
 import 'dart:async';
 
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -12,11 +11,13 @@ import 'package:object_detection/modules/volunteer/ui/volunteer_request/cubit/cu
 import 'package:object_detection/shared/constants.dart';
 import 'package:object_detection/strings/strings.dart';
 
-
 class UserFirebase {
   static final _auth = FirebaseAuth.instance;
   static final FirebaseFirestore _fireStore = myFireStore;
   static final FirebaseStorage _storage = myStorage;
+  static FirebaseAuth get_auth() {
+    return _auth;
+  }
 
   static Future<UserCredential> createCredentialAndSignIn(
       String verificationId, String smsCode) async {
@@ -116,7 +117,8 @@ class UserFirebase {
     await _fireStore.collection(USERS_COLLECTION).doc(uId).update({key: value});
   }
 
-  static Future<void> setRequestForAllVolunteers(Request request,VolunteerRequestCubit cubit) async {
+  static Future<void> setRequestForAllVolunteers(
+      Request request, VolunteerRequestCubit cubit) async {
     await _fireStore
         .collection(REQUESTS_COLLECTION)
         .doc(getUid())

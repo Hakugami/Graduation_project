@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:object_detection/modules/volunteer/ui/volunteer_request/cubit/cubit.dart';
 import 'package:object_detection/shared/constants.dart';
@@ -5,6 +6,7 @@ import 'package:object_detection/shared/constants.dart';
 import '../../../../shared/components.dart';
 import '../../../../shared/styles/colors.dart';
 import '../../../../strings/strings.dart';
+import '../../data/firebase/user_firebase.dart';
 import 'cubit/states.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -16,7 +18,7 @@ class RegisterScreen extends StatelessWidget {
   double screenHeight = 0.0;
   VolunteerRequestCubit cubit;
   VolunteerRequestStates myState;
-  RegisterScreen(this.cubit,this.myState);
+  RegisterScreen(this.cubit, this.myState);
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +105,21 @@ class RegisterScreen extends StatelessWidget {
                   cubit.phone = '+2' + _phoneNumController.text;
                   cubit.nationalId = _idController.text;
                   cubit.fullName = _fullNameController.text;
+                  // UserCredential user = await UserFirebase.get_auth()
+                  //     .signInWithEmailAndPassword(
+                  //         email: "Ellethy2020@yahoo.com",
+                  //         password: "@Ellethy1@");
+                  // print(cubit.phone);
+                  // showToast(cubit.phone);
+                  // UserCredential user;
+                  // try {
+                  //   user = await FirebaseAuth.instance
+                  //       .createUserWithEmailAndPassword(
+                  //           email: "Ellethy2020@yahoo.com",
+                  //           password: "@Ellethy222");
+                  // } catch (e) {
+                  //   print(e);
+                  // }
                   if (_formKey.currentState!.validate()) {
                     if (!await cubit.isPhoneNumberExist(sourceScreen: 0))
                       await cubit.sendPhoneOtp(0);
@@ -115,6 +132,7 @@ class RegisterScreen extends StatelessWidget {
       ],
     );
   }
+
   Widget buildHaveAnAccount(context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
