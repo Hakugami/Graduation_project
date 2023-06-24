@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:background_location/background_location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location/location.dart' as loc;
 import 'package:location/location.dart';
@@ -18,16 +19,19 @@ class LocationApi {
       VolunteerRequestCubit cubit) async {
     if (await _checkServiceAvailability() && await _checkLocationPermission()) {
       myCubit = cubit;
-
+      BackgroundLocation.setAndroidNotification(
+          title: "Blind Assistant",
+          message: "listen continuous location changes",
+          icon: "@mipmap/ic_launcher");
       // listen on location change every 3 minutes
-
+      BackgroundLocation.setAndroidConfiguration(1000 * 60 * 3);
+      BackgroundLocation.startLocationService();
+      // listen on location change every 3 minutes
       _listenOnLocationChange();
       // showToast('Request is sent successfully');
     }
     myCubit = cubit;
   }
-
-
 
   static Future<bool> _checkServiceAvailability() async {
     bool _serviceEnabled = await _location.serviceEnabled();
@@ -37,8 +41,7 @@ class LocationApi {
     return _serviceEnabled;
   }
 
-
-   static Future<bool> _checkLocationPermission() async {
+  static Future<bool> _checkLocationPermission() async {
     PermissionStatus _permissionGranted = await _location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await _location.requestPermission();
@@ -56,7 +59,11 @@ class LocationApi {
     }).listen((locationData) async {
       await _updateUserLocation(locationData.latitude, locationData.longitude);
     });*/
-
+    try {
+      BackgroundLocation.getLocationUpdates((location) async {
+        await _updateUserLocation(location.latitude, location.longitude);
+      });
+    } catch (err) {}
   }
 
   static Request? request;

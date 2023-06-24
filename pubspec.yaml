@@ -79,7 +79,7 @@ dependencies:
 
   #location
   location: ^4.4.0
-
+  background_location: ^0.8.1
 
   #teseract for textRec
   flutter_tesseract_ocr: ^0.4.20
