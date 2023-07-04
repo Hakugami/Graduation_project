@@ -7,6 +7,7 @@ import 'package:object_detection/modules/volunteer/ui/volunteer_request/response
 
 import '../../../../../../models/Request.dart';
 import '../../../../../../models/Response.dart';
+import '../../../../../../models/RouteData.dart';
 import '../../../../../../shared/constants.dart';
 import '../../../../../../strings/strings.dart';
 import '../../../../data/firebase/user_firebase.dart';
@@ -60,8 +61,8 @@ class ResponseCubit extends Cubit<VolunteerResponseStates> {
           final myRequest = Request.fromJson(docSnapShot.data()!!);
           if (myRequest.state == REQUEST_STATE_ACCEPTED) {
             _listenOnResponse(
-                myRequest.blindData.key + "&" + myRequest.volunteerId!);
-            requestStream!.cancel();
+                myRequest.blindData.nationalId);
+            // requestStream!.cancel();
           }
         }
       });
@@ -75,20 +76,36 @@ class ResponseCubit extends Cubit<VolunteerResponseStates> {
   StreamSubscription? responseStream;
 
   void _listenOnResponse(String responseKey) {
-    responseStream =
-        UserFirebase.listenOnMyResponse(responseKey).listen((doc) async {
+    responseStream = UserFirebase.listenOnMyResponse(responseKey).listen((doc) async {
       if (doc.exists && doc.data() != null) {
-        response = Response.fromJson(doc.data()!);
+        final responseData = doc.data()!;
+
+        final blindId = responseData['blindId'];
+        final volunteerId = responseData['volunteerId'];
+        final volunteerPhone = responseData['volunteerPhone'];
+        final volunteerName = responseData['volunteerName'];
+
+        final routeDataJson = responseData['routeData'];
+        final routeData = RouteData.fromJson(routeDataJson);
+
+        response = Response(
+          blindId: blindId,
+          volunteerId: volunteerId,
+          volunteerPhone: volunteerPhone,
+          volunteerName: volunteerName,
+          routeData: routeData,
+        );
 
         emit(ResponseSent());
+
         if (firstTime) {
-          (await getPreference())
-              .setString(PREFERENCE_RESPONSE_KEY, responseKey);
+          (await getPreference()).setString(PREFERENCE_RESPONSE_KEY, responseKey);
           firstTime = false;
         }
       }
     });
   }
+
 
   onDispose() {
     requestStream?.cancel();

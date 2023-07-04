@@ -134,9 +134,16 @@ class UserFirebase {
 
   static Stream<DocumentSnapshot<Map<String, dynamic>>> listenOnMyResponse(
       String responseId) {
-    return _fireStore
+    return FirebaseFirestore.instance
         .collection(RESPONSES_COLLECTION)
-        .doc(responseId)
-        .snapshots();
+        .where('blindId', isEqualTo: responseId)
+        .snapshots()
+        .map((querySnapshot) {
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first;
+      } else {
+        throw Exception('Response not found');
+      }
+    });
   }
 }

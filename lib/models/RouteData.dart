@@ -14,8 +14,8 @@ class RouteData {
   }
   static RouteData fromJson(Map<String, dynamic> json) {
       return RouteData(
-        distance: json['distance'],
-        duration: json['duration'],
+        distance: double.parse(json['distance'].toString()),
+        duration: double.parse(json['duration'].toString()),
       );
 
   }
