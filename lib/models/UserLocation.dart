@@ -25,8 +25,8 @@ class UserLocation {
 
   static UserLocation fromJson(Map<String, dynamic> json) {
     return UserLocation(
-      json['latitude'],
-      json['longitude']
+      double.parse(json['latitude'].toString()),
+      double.parse(json['longitude'].toString())
     );
   }
 
